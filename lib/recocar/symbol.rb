@@ -26,7 +26,12 @@ module Recocar
       @symbols.each do |symbol|
         results[symbol] = correlate @images[symbol], symb
       end
-      results.sort_by {|_key, value| value}.last
+      results = results.sort_by {|_key, value| value}
+      if results.last.first == "i" && results.last.last <= 0.9
+        results[-2]
+      else
+        results.last
+      end
     end
 
     private

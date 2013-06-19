@@ -16,13 +16,18 @@ require "recocar/symbol"
 
 a = Recocar::Plate.new
 sym = Recocar::Symbol.new
-a.image = OpenCV::IplImage.load("/home/sqrel/Dropbox/image.png", OpenCV::CV_LOAD_IMAGE_GRAYSCALE)
+a.image = OpenCV::IplImage.load("../spec/fixtures/4.jpg", OpenCV::CV_LOAD_IMAGE_GRAYSCALE)
 a.recognize.each do |plate|
+  result = ""
   k = 0
   plate.each do |symbol|
     rez = sym.recognize(symbol)
-    symbol.save "#{k}_#{rez.first}.png"
-    p sym.recognize(symbol)
+    #symbol.save "#{k}_#{rez.first}.png"
+    re = sym.recognize(symbol)
+    if re.last > 0.6
+      result += re.first
+    end
     k += 1
   end
+  p result
 end
