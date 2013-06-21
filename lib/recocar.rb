@@ -16,7 +16,7 @@ require "recocar/symbol"
 
 a = Recocar::Plate.new
 sym = Recocar::Symbol.new
-a.image = OpenCV::IplImage.load("../spec/fixtures/4.jpg", OpenCV::CV_LOAD_IMAGE_GRAYSCALE)
+a.image = OpenCV::IplImage.load("../spec/fixtures/3.jpg", OpenCV::CV_LOAD_IMAGE_GRAYSCALE)
 a.recognize.each do |plate|
   result = ""
   k = 0
@@ -24,7 +24,7 @@ a.recognize.each do |plate|
     rez = sym.recognize(symbol)
     #symbol.save "#{k}_#{rez.first}.png"
     re = sym.recognize(symbol)
-    if re.last > 0.6
+    if re.last > 0.4
       result += re.first
     end
     k += 1
