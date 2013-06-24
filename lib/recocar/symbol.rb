@@ -9,34 +9,50 @@ module Recocar
     def initialize
       @symbols = %w{
          0 1 2 3 4 5 6 7 8 9 a
-         b c d e f h i k m o p
+         b c d e f h k m o p
          s t u x
       }
       data = File.join(File.dirname(__FILE__), 'db')
       @images = {}
       @symbols.each do |symbol|
-        @images[symbol] = binarize(resize(IplImage.load(File.join("db", "#{symbol}.png"), CV_LOAD_IMAGE_GRAYSCALE)))
+        @images[symbol] = binarize(symbol, resize(IplImage.load(File.join("db", "#{symbol}.png"), CV_LOAD_IMAGE_GRAYSCALE)))
       end
     end
 
-    def recognize symb
+    def recognize symb, i = 0
       results = {}
-      symb = binarize(resize(symb))
+      symb = binarize("asdfff", resize(symb))
 
+      s = []
       @symbols.each do |symbol|
+        k = 0
+        @images[symbol].each_with_index do |e,n|
+          if e == symb[n] &&  e != 0
+            k += 1
+          end
+        end
+        s << { k: k / 992.0, sym: symbol }
         results[symbol] = correlate @images[symbol], symb
       end
       results = results.sort_by {|_key, value| value}
       if results.last.first == "i" && results.last.last <= 0.9
-        results[-2]
-      else
-        results.last
+        results.pop
       end
+      if (2..5).include?(i) 
+        if results.last.first == "o"
+          results.push ["0", 0.9]
+        elsif results.last.first == "x"
+          results.push ["7", 0.9]
+        end
+      end
+      results.last
     end
 
     private
-      def binarize img
-        img.threshold(128, 255, CV_THRESH_BINARY_INV).to_binarized_a.flatten
+      def binarize a, img
+        q = img.threshold(128, 255, CV_THRESH_BINARY_INV)
+        q = q.to_binarized_a.flatten
+        q
       end
 
       def resize img

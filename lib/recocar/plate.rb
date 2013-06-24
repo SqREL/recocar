@@ -65,14 +65,18 @@ module Recocar
           box = contour.bounding_rect
           b = contour.min_area_rect2
           if box.height < 18 || box.width < 11 || box.height / box.width < 0.9 ||
-             contour.contour_area.abs > 550 || contour.contour_area.abs < 100 ||
-             box.width*box.height > 800
+             contour.contour_area.abs > 800 || contour.contour_area.abs < 100 ||
+             box.width*box.height > 1500
             contour = contour.h_next
             next
           end
 
+          box.x = box.x + 1
+          box.y = box.y + 1
+          box.width = box.width - 1
+          box.height = box.height - 1
           plate.set_roi box
-          #plate.save "#{z}_asdfasdf.png"
+          #plate.save "#{z}.png"
           z += 1
           contours << plate.copy
           plate.reset_roi
